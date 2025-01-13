@@ -1,28 +1,40 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Navbar @walletConnected="walletConnected" />
+    <main-content
+        :userAddress="userAddress"
+        :ethBalance="ethBalance"
+        :soulBalance="soulBalance"
+    />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from './components/NavBar.vue';
+import MainContent from './components/MainContent.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    Navbar,
+    MainContent,
+  },
+  data() {
+    return {
+      userAddress: 'Not connected',
+      ethBalance: '0.0',
+      soulBalance: '0.0',
+    };
+  },
+  methods: {
+    walletConnected(data) {
+      this.userAddress = data.address;
+      this.ethBalance = '100.0'; // Replace with actual logic to fetch balance
+      this.soulBalance = '1000.0'; // Simulate SoulQKC balance
+    },
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css";
 </style>
