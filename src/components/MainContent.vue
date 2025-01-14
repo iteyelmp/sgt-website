@@ -120,7 +120,7 @@ export default {
           params: [networkParams],
         });
         if (result === null) {
-          alert('This network is already using the special RPC.');
+          alert('This network is already added.');
         }
       } catch (error) {
         console.error(error);
