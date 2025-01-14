@@ -1,11 +1,7 @@
 <template>
   <div>
     <Navbar @walletConnected="walletConnected" />
-    <main-content
-        :userAddress="userAddress"
-        :ethBalance="ethBalance"
-        :soulBalance="soulBalance"
-    />
+    <main-content :userAddress="userAddress" />
   </div>
 </template>
 
@@ -28,8 +24,6 @@ export default {
   methods: {
     walletConnected(data) {
       this.userAddress = data.address;
-      this.ethBalance = '100.0'; // Replace with actual logic to fetch balance
-      this.soulBalance = '1000.0'; // Simulate SoulQKC balance
     },
   },
 };

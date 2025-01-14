@@ -6,12 +6,16 @@
           <img class="logo" src="@/assets/logo.png" />
         </div>
         <div class="flex items-center">
+          <div v-if="address" class="text-gray-400 break-all">
+            {{ address }}
+          </div>
           <button
+              v-else
               id="connectWallet"
               @click="connectWallet"
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
           >
-            {{ walletConnected ? 'Connected' : 'Connect Wallet' }}
+            Connect Wallet
           </button>
         </div>
       </div>
@@ -20,31 +24,40 @@
 </template>
 
 <script>
-// import {ethers} from "ethers";
 
 export default {
   data() {
     return {
-      walletConnected: false,
+      address: null,
     };
   },
   methods: {
     async connectWallet() {
-      // try {
-      //   if (typeof window.ethereum !== 'undefined') {
-      //     const provider = new Web3Provider(window.ethereum);
-      //     await window.ethereum.request({ method: 'eth_requestAccounts' });
-      //     const signer = await provider.getSigner();
-      //     const address = await signer.getAddress();
-      //     this.$emit('walletConnected', {
-      //       address: `${address.substring(0, 6)}...${address.substring(38)}`,
-      //     });
-      //     this.walletConnected = true;
-      //   }
-      // } catch (error) {
-      //   console.error(error);
-      //   alert('Failed to connect wallet');
-      // }
+      try {
+        if (window.ethereum) {
+          window.ethereum
+              .request({method: "eth_requestAccounts"})
+              .then((accounts) => {
+                // account
+                if (accounts.length === 0) {
+                  alert("MetaMask is locked or the user has not connected any accounts");
+                  return;
+                }
+                const address = accounts[0];
+                this.address = `${address.substring(0, 6)}...${address.substring(38)}`;
+                this.$emit('walletConnected', {
+                  address: address,
+                });
+                this.walletConnected = true;
+              })
+              .catch(() => {
+                alert('Failed to connect wallet');
+              });
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Failed to connect wallet');
+      }
     },
   },
 };
@@ -52,6 +65,6 @@ export default {
 
 <style scoped>
 .logo {
-  padding: 10px 0;
+  height: 32px;
 }
 </style>

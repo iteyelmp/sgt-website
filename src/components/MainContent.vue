@@ -1,7 +1,7 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">SoulQKC Gas Token</h2>
+      <h2 class="text-4xl font-bold text-gray-900 mb-4">Soul Gas Token</h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
         A non-transferable gas token that eliminates entry costs by allowing new users to pay transaction fees without upfront purchases.
       </p>
@@ -12,19 +12,23 @@
           :userAddress="userAddress"
           :ethBalance="ethBalance"
           :soulBalance="soulBalance"
+          :totalBalance="totalBalance"
       />
       <div class="bg-white rounded-xl shadow-md p-6">
-        <h3 class="text-2xl font-semibold mb-4 text-gray-800">Add to Wallet</h3>
+        <h3 class="text-2xl font-semibold mb-4 text-gray-800">Add Special RPC to Wallet</h3>
         <button
             id="addToken"
-            @click="addTokenToWallet"
+            @click="addNetworkToWallet"
             class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 mb-4"
         >
-          Add SoulQKC to Wallet
+          Add Special RPC to MetaMask
         </button>
         <p class="text-sm text-gray-500">
-          Add SoulQKC token to your wallet to track your balance easily.
+          Add a special RPC to track your total balance, which includes both <strong>standard tokens</strong> and <strong>Soul Gas Tokens</strong>.
         </p>
+        <div class="text-sm text-red-500 mt-2">
+          <strong>Note:</strong> Soul Gas Tokens cannot be transferred and are only used for gas fees.
+        </div>
       </div>
     </div>
 
@@ -35,6 +39,26 @@
 <script>
 import WalletInfo from './WalletInfo.vue';
 import KeyFeatures from './KeyFeatures.vue';
+import {ethers} from "ethers";
+
+const tokenABI = [
+  'function balanceOf(address owner) view returns (uint256)',
+];
+
+const RPC = "https://rpc.beta.testnet.l2.quarkchain.io:8545";
+const tokenAddress = "0x4200000000000000000000000000000000000800";
+const chainId = 3335;
+const networkParams = {
+  chainId: `0x${chainId.toString(16)}`,
+  chainName: 'QuarkChain Special L2 Testnet',
+  nativeCurrency: {
+    name: 'QKC',
+    symbol: 'QKC',
+    decimals: 18,
+  },
+  rpcUrls: ['https://rpc.beta.testnet.l2.quarkchain.io:8545'],
+  blockExplorerUrls: [`https://explorer.beta.testnet.l2.quarkchain.io/`],
+};
 
 export default {
   components: {
@@ -43,43 +67,71 @@ export default {
   },
   data() {
     return {
-      userAddress: 'Not connected',
       ethBalance: '0.0',
       soulBalance: '0.0',
+      totalBalance: '0.0'
     };
   },
+  props: {
+    userAddress: {
+      type: String,
+      required: true,
+      default: 'Not connected',
+    },
+  },
+  watch: {
+    userAddress(newAddress) {
+      if (newAddress && newAddress !== 'Not connected') {
+        this.fetchBalances(newAddress);
+      }
+    },
+  },
   methods: {
-    async addTokenToWallet() {
+    async fetchBalances(address) {
       try {
-        const tokenAddress = '0x0000000000000000000000000000000000000000'; // Replace with actual token address
-        const tokenSymbol = 'SoulQKC';
-        const tokenDecimals = 18;
+        const provider = new ethers.JsonRpcProvider(RPC);
+        const balance = await provider.getBalance(address);
+        this.ethBalance = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(parseFloat(ethers.formatEther(balance)));
 
-        const wasAdded = await window.ethereum.request({
-          method: 'wallet_watchAsset',
-          params: {
-            type: 'ERC20',
-            options: {
-              address: tokenAddress,
-              symbol: tokenSymbol,
-              decimals: tokenDecimals,
-            },
-          },
+        // ERC20 Token balance
+        const tokenContract = new ethers.Contract(tokenAddress, tokenABI, provider);
+        const tokenBalance = await tokenContract.balanceOf(address);
+        this.soulBalance = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(parseFloat(ethers.formatEther(tokenBalance)));
+
+        const totalBalance = balance + tokenBalance;
+        this.totalBalance = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(parseFloat(ethers.formatEther(totalBalance)));
+      } catch (error) {
+        alert('Failed to fetch balances');
+      }
+    },
+    async addNetworkToWallet() {
+      try {
+        const result = await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [networkParams],
         });
-
-        if (wasAdded) {
-          alert('Token was successfully added to your wallet!');
+        if (result === null) {
+          alert('This network is already using the special RPC.');
         }
       } catch (error) {
         console.error(error);
-        alert('Failed to add token to wallet');
+        alert('Failed to add network to wallet');
       }
     },
-    walletConnected(data) {
-      this.userAddress = data.address;
-      this.ethBalance = '100.0'; // Replace with actual logic to fetch balance
-      this.soulBalance = '1000.0'; // Simulate SoulQKC balance
-    },
+  },
+  mounted() {
+    if (this.userAddress && this.userAddress !== 'Not connected') {
+      this.fetchBalances(this.userAddress);
+    }
   },
 };
 </script>
