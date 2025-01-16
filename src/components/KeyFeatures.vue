@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="p-4 rounded-lg bg-blue-50">
         <h4 class="font-semibold text-lg mb-2">Non-transferable</h4>
-        <p class="text-gray-600">Tokens cannot be transferred between users, ensuring fair distribution.</p>
+        <p class="text-gray-600">Tokens are non-transferable between users and are exclusively designated for gas fees.</p>
       </div>
       <div class="p-4 rounded-lg bg-purple-50">
         <h4 class="font-semibold text-lg mb-2">Zero Entry Cost</h4>

@@ -15,19 +15,19 @@
           :totalBalance="totalBalance"
       />
       <div class="bg-white rounded-xl shadow-md p-6">
-        <h3 class="text-2xl font-semibold mb-4 text-gray-800">Add Special RPC to Wallet</h3>
+        <h3 class="text-2xl font-semibold mb-4 text-gray-800">Add the SGT-compatible RPC to Wallet</h3>
         <button
             id="addToken"
             @click="addNetworkToWallet"
             class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 mb-4"
         >
-          Add Special RPC to MetaMask
+          Add the RPC to Metamask
         </button>
         <p class="text-sm text-gray-500">
-          Add a special RPC to track your total balance, which includes both <strong>standard tokens</strong> and <strong>Soul Gas Tokens</strong>.
+          Adding the SGT-compatible RPC to MetaMask will display the total balance, which combines both <strong>QKC tokens</strong> and <strong>SGT Tokens</strong>.
         </p>
         <div class="text-sm text-red-500 mt-2">
-          <strong>Note:</strong> Soul Gas Tokens cannot be transferred and are only used for gas fees.
+          <strong>Note:</strong> While the displayed balance reflects the combined total of QKC tokens and SGT tokens, only the QKC token balance is transferable, as SGT tokens are non-transferable and exclusively used for gas fees.
         </div>
       </div>
     </div>

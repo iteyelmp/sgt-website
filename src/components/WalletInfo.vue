@@ -7,7 +7,7 @@
         QKC Balance:
         <span class="font-mono text-gray-500 ml-2">{{ ethBalance }}</span>
         <span class="ml-2 cursor-pointer text-blue-500 tooltip"
-              data-tooltip="QKC balance can be transferred.">
+              data-tooltip="The QKC balance is transferable">
           <i class="fas fa-question-circle"></i>
         </span>
       </p>
@@ -15,7 +15,7 @@
         Soul Gas Token Balance:
         <span class="font-mono text-gray-500 ml-2">{{ soulBalance }}</span>
         <span class="ml-2 cursor-pointer text-blue-500 tooltip"
-              data-tooltip="SGT cannot be transferred. They are only for gas fees.">
+              data-tooltip="The SGT balance is non-transferable and exclusively used for gas fees">
           <i class="fas fa-question-circle"></i>
         </span>
       </p>
@@ -23,7 +23,7 @@
         Total Balance:
         <span class="font-mono text-gray-500 ml-2">{{ totalBalance }}</span>
         <span class="ml-2 cursor-pointer text-blue-500 tooltip"
-              data-tooltip="Total Balance = (QKC Balance + Soul Gas Token Balance)">
+              data-tooltip="The total balance is the sum of the QKC balance and the SGT balance">
           <i class="fas fa-question-circle"></i>
         </span>
       </p>
@@ -61,9 +61,13 @@ export default {
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease-out, visibility 0s ease 0.3s;
-  white-space: nowrap; /* Prevent text wrapping */
-  width: auto; /* Let the tooltip width adjust based on content */
-  max-width: 350px; /* Set a maximum width */
+  max-width: 350px;
+  min-width: 230px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: left;
+  line-height: 1.5;
 }
 
 .tooltip:hover::after {
