@@ -56,7 +56,7 @@ const networkParams = {
     symbol: 'QKC',
     decimals: 18,
   },
-  rpcUrls: ['https://rpc.beta.testnet.l2.quarkchain.io:8545'],
+  rpcUrls: ['https://rpc.beta.testnet.l2.quarkchain.io:8645'],
   blockExplorerUrls: [`https://explorer.beta.testnet.l2.quarkchain.io/`],
 };
 
